@@ -1,5 +1,5 @@
-use std::env;
 use std::collections::HashMap;
+use std::env;
 
 mod models;
 use models::Events;
@@ -45,17 +45,16 @@ fn main() {
     // - ...
 
     let mut push_repo_map: HashMap<String, i64> = HashMap::with_capacity(events.len());
-    
+
     for event in events {
         if !(event.r#type == "PushEvent") {
             continue;
         }
 
-        if !(push_repo_map.contains_key(&event.repo.name)) {
-            push_repo_map.insert(event.repo.name, 1);
-        } else {
-            let r = push_repo_map.get_mut(&event.repo.name).unwrap();
+        if let Some(r) = push_repo_map.get_mut(&event.repo.name) {
             *r = *r + 1
+        } else {
+            push_repo_map.insert(event.repo.name, 1);
         }
     }
 
